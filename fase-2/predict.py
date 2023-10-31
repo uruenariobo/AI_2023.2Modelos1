@@ -4,6 +4,7 @@ import pandas as pd  # Importar la biblioteca pandas para el manejo de datos en 
 import os  # Importar la biblioteca os para operaciones relacionadas con el sistema operativo
 from sklearn.neighbors import KNeighborsRegressor  # Importar el regresor KNeighbors de scikit-learn
 from datetime import datetime  # Agregar esta línea para manejar la columna pickup_datetime
+from loguru import logger
 
 # Definir los valores por defecto para los argumentos
 DEFAULT_INPUT_FILE = 'test.csv'  # Nombre de archivo de entrada por defecto
@@ -67,20 +68,21 @@ def clean_df(df):
     )
     return df
 
-print("Cargando datos de entrada")  # Imprimir un mensaje
+logger.info(f"Cargando datos de entrada desde {input_file}")# Imprimir un mensaje
 cols = ['pickup_datetime', 'pickup_longitude', 'pickup_latitude', 'dropoff_longitude', 'dropoff_latitude', 'passenger_count']
 Xts = pd.read_csv(input_file, usecols=cols)  # Leer el archivo de entrada y seleccionar columnas específicas
 Xts = clean_df(Xts)  # Llamar a la función para limpiar los datos
 
 # Cargar el modelo preentrenado
+logger.info(f"Cargando modelo preentrenado desde {model_file}")# Imprimir un mensaje
 model = pickle.load(open(model_file, 'rb'))
 
-print("Realizando predicciones")  # Imprimir un mensaje
+logger.info("Realizando predicciones")# Imprimir un mensaje
 predictions = model.predict(Xts)  # Realizar predicciones con el modelo
 
-# Imprimir las predicciones o guardarlas en el archivo de predicciones
-for prediction in predictions:
-    print(f'Predicción: {prediction}')
+# Imprimir las predicciones
+#for prediction in predictions:
+    #print(f'Predicción: {prediction}')
 
-print(f"Guardando predicciones en {predictions_file}")  # Imprimir un mensaje con el nombre del archivo de predicciones
+logger.info(f"Guardando predicciones en {predictions_file}")# Imprimir un mensaje con el nombre del archivo de predicciones
 pd.DataFrame(predictions.reshape(-1, 1), columns=['predicciones']).to_csv(predictions_file, index=False)  # Guardar las predicciones en un archivo CSV

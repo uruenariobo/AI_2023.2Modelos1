@@ -9,13 +9,7 @@ ENV PYTHONUNBUFFERED 1
 WORKDIR /app
 
 # Copiar archivos y directorios necesarios al contenedor
-COPY model.pkl            /app
-COPY train.py           /app
-COPY predict.py         /app
-COPY predictions.csv         /app
-COPY test.csv         /app
-COPY train.csv         /app
-COPY requirements.txt   /app
+COPY . /app
 
 # Instalar las dependencias especificadas en requirements.txt
 RUN pip install -r requirements.txt
@@ -28,5 +22,5 @@ EXPOSE 8080
 # CMD ["python", "predict.py","--input_file", "test.csv", "--predictions_file", "predictions.csv"]
 
 
-# Después de ejecutar train.py, ejecuta predict.py
-CMD ["python", "train.py"] and ["python",  "predict.py"]
+# Después de ejecutar train.py, ejecuta predict.py y queda disponible para recibir peticiones.
+CMD ["sh", "-c", "python train.py && python predict.py && tail -f /dev/null"]

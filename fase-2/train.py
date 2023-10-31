@@ -7,6 +7,7 @@ from sklearn.neighbors import KNeighborsRegressor  # Para el modelo KNN
 from sklearn.metrics import mean_squared_error  # Para calcular la métrica RMSE
 import numpy as np  # Para operaciones matemáticas
 from datetime import datetime  # Para trabajar con fechas y horas
+from loguru import logger
 
 # Definir los valores por defecto para los argumentos
 DEFAULT_TRAIN_FILE = 'train.csv'  # Nombre del archivo CSV de datos de entrenamiento
@@ -75,6 +76,7 @@ def load_data(file_path):
     train = pd.read_csv(file_path, usecols=cols)
     # Realiza la limpieza de los datos
     train = clean_df(train)
+    
     return train
 
 # Modelo K-Nearest Neighbors (KNN)
@@ -97,7 +99,7 @@ def knn_model(x_train, x_test, y_train, y_test, neighbors):
     # Convierte la columna 'pickup_datetime' a valores numéricos
     x_train['pickup_datetime'] = (x_train['pickup_datetime'].dt.tz_localize(None) - datetime(1970, 1, 1)).dt.total_seconds().astype(float)
     x_test['pickup_datetime'] = (x_test['pickup_datetime'].dt.tz_localize(None) - datetime(1970, 1, 1)).dt.total_seconds().astype(float)
-
+    print("RMSE mínimo y las mejores predicciones:")  # Imprimir un mensaje
     for n in neighbors:
         knn = KNeighborsRegressor(n_neighbors=n)
         knn.fit(x_train, y_train)
@@ -122,6 +124,7 @@ def build_and_train_model(train, model_fn):
     Returns:
         None
     """
+    logger.info(f"Reescribiendo modelo existente en archivo {model_file_arg}")# Imprimir un mensaje
     X = train.drop(columns=['fare_amount'])
     y = train['fare_amount']
 
@@ -132,13 +135,19 @@ def build_and_train_model(train, model_fn):
     neighbors = [10, 20]
 
     # Entrenamiento de modelos KNN con diferentes números de vecinos
+    logger.info(f"Ajustando modelo.")# Imprimir un mensaje
     model, rmse, pred = model_fn(x_train, x_test, y_train, y_test, neighbors)
 
     # Guardar el modelo entrenado en el archivo especificado
     with open(model_file_arg, 'wb') as model_file:
         pickle.dump(model, model_file)
+    logger.info(f"Modelo guardado en {model_file.name}")# Imprimir un mensaje
 
 if __name__ == "__main__":
+    
     train_data = load_data(train_file)  # Cargar los datos de entrenamiento desde el archivo CSV
+    logger.info(f"Datos de entrenamiento cargados desde {train_file}")# Imprimir un mensaje
+    
     # Llamar a la función build_and_train_model para entrenar el modelo KNN
     build_and_train_model(train_data, knn_model)
+    
