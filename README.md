@@ -131,6 +131,70 @@ To summarize, in this phase, you have:
 
 Feel free to use this model for your taxi fare prediction tasks.
 
+## Phase 3: RESTful API
+
+In Phase 3, we will deploy the Taxi Fare Prediction Model within a container and create a user-friendly RESTful API for making predictions. This API will provide a convenient and efficient way to access the model's predictive capabilities, allowing you to integrate it into various applications and services.
+
+### Setting Up the RESTful API
+
+1. **Clone the project repository if you haven't already.**
+
+   ```bash
+   git clone https://github.com/uruenariobo/AI_2023.2Modelos1.git
+
+2. **Navigate to the `phase-3` directory in your project using the following command:**
+
+    ```bash
+    cd AI_2023.2Modelos1/fase-3
+    ```
+
+3. **Build the Docker image using the provided Dockerfile with this command:**
+
+    ```bash
+    docker build -t apirest:2 .
+    ```
+
+4. **Run the Docker container for the REST API:**
+
+    ```bash
+    docker run -p 5000:5000 apirest:2
+    ```
+
+### API Endpoints
+
+The API exposes two endpoints:
+
+1. **/predict: Returns predictions for a new data point.**
+
+To make predictions, use the following curl command in your terminal:
+
+```bash
+    curl -X POST -H "Content-Type: application/json" -d '{"pickup_datetime": "2023-01-01 12:00:00", "pickup_longitude": -73.987, "pickup_latitude": 40.748, "dropoff_longitude": -74.001, "dropoff_latitude": 40.745, "passenger_count": 1}' http://localhost:5000/predict
+```
+
+Adjust the values as needed for your specific case.
+
+2. **/train: Initiates a training process with standard training data.**
+
+To train a new model with standard training data, use the following curl command:
+
+```bash
+    curl -X POST -H "Content-Type: application/json" -d '{"pickup_datetime": ["2023-01-01 12:00:00", "2023-01-01 12:15:00"], "pickup_longitude": [-73.987, -73.990], "pickup_latitude": [40.748, 40.750], "dropoff_longitude": [-74.001, -74.005], "dropoff_latitude": [40.745, 40.747], "passenger_count": [1, 2], "fare_amount": [10.0, 15.0]}' http://localhost:5000/train
+```
+
+Ensure that you adjust the values according to your actual training dataset.
+
+With these steps, you have set up and run the Taxi Fare Prediction Model as a RESTful API within a Docker container. Enjoy using the API for making predictions and training new models seamlessly.
+
+
+We're excited about the possibilities this API will offer to you. Get ready to experience the power of machine learning in a whole new way.
+
+**Conclusion:**
+
+Congratulations! You have successfully implemented the RESTful API for the Taxi Fare Prediction Model and can now interact with it using curl commands. The API offers a straightforward way to make predictions and train new models.
+We hope you continue to enjoy being a part of this project and challenge. Happy modeling!
+
+
 ## Participants
 
 - Miguel Angel Urueña Riobo
@@ -141,14 +205,4 @@ Feel free to use this model for your taxi fare prediction tasks.
 
 You can access the competition dataset [here](https://www.kaggle.com/competitions/new-york-city-taxi-fare-prediction/data).
 
-## Next Phases
 
-Stay tuned for the upcoming Phase 3 of this project. In the next phase, we will take our Taxi Fare Prediction Model to the next level. Here's what you can expect:
-
-### Phase 3: RESTful API
-
-In Phase 3, we will deploy the Taxi Fare Prediction Model within a container and create a user-friendly RESTful API for making predictions. This API will provide a convenient and efficient way to access the model's predictive capabilities, allowing you to integrate it into various applications and services.
-
-We're excited about the possibilities this API will offer and look forward to sharing the next steps with you. Get ready to experience the power of machine learning in a whole new way.
-
-We hope you continue to enjoy being a part of this project and challenge. Happy modeling!
